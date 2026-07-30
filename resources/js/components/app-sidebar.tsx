@@ -1,5 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, GraduationCap, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    FolderGit2,
+    GraduationCap,
+    LayoutGrid,
+    NotebookPen,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -14,6 +20,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as studyPlansIndex } from '@/routes/study-plans';
 import { index as subjectsIndex } from '@/routes/subjects';
 import type { NavItem } from '@/types';
 
@@ -27,6 +34,11 @@ const mainNavItems: NavItem[] = [
         title: 'Disciplinas',
         href: subjectsIndex(),
         icon: GraduationCap,
+    },
+    {
+        title: 'Planos de Estudo',
+        href: studyPlansIndex(),
+        icon: NotebookPen,
     },
 ];
 
