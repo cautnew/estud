@@ -28,17 +28,24 @@ trait HasOwner
     public static function bootHasOwner(): void
     {
         static::creating(function (Model $model): void {
-            if (! $model->owner_id && Auth::check()) {
-                $model->owner_id = Auth::id();
+            if (! $model->getAttribute('owner_id') && Auth::check()) {
+                $model->setAttribute('owner_id', Auth::id());
             }
         });
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /**
+     * @param  Builder<$this>  $query
+     * @return Builder<$this>
+     */
     public function scopeOwnedBy(Builder $query, User $user): Builder
     {
         return $query->where('owner_id', $user->id);
