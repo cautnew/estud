@@ -65,3 +65,32 @@ export type StudyPlan = {
     created_at: string;
     updated_at: string;
 };
+
+export type ScheduleType =
+    'daily' | 'weekly' | 'biweekly' | 'monthly' | 'quarterly';
+
+export type ScheduleItem = {
+    id: number;
+    schedule_id: number;
+    subject_id: number;
+    day_of_week: number | null;
+    day_of_month: number | null;
+    start_time: string;
+    duration_minutes: number;
+    priority: number;
+    subject?: Subject;
+    created_at: string;
+    updated_at: string;
+};
+
+export type Schedule = {
+    id: number;
+    owner_id: number;
+    name: string;
+    type: ScheduleType;
+    schedule_items_count?: number;
+    schedule_items?: ScheduleItem[];
+    owner?: Owner;
+    created_at: string;
+    updated_at: string;
+};

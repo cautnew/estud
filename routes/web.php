@@ -12,3 +12,4 @@ require __DIR__.'/settings.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/subjects.php';
 require __DIR__.'/study-plans.php';
+require __DIR__.'/schedules.php';

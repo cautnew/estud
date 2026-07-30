@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import {
     BookOpen,
+    CalendarDays,
     FolderGit2,
     GraduationCap,
     LayoutGrid,
@@ -20,6 +21,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as schedulesIndex } from '@/routes/schedules';
 import { index as studyPlansIndex } from '@/routes/study-plans';
 import { index as subjectsIndex } from '@/routes/subjects';
 import type { NavItem } from '@/types';
@@ -39,6 +41,11 @@ const mainNavItems: NavItem[] = [
         title: 'Planos de Estudo',
         href: studyPlansIndex(),
         icon: NotebookPen,
+    },
+    {
+        title: 'Cronogramas',
+        href: schedulesIndex(),
+        icon: CalendarDays,
     },
 ];
 
