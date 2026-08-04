@@ -6,6 +6,7 @@ import {
     GraduationCap,
     LayoutGrid,
     NotebookPen,
+    Timer,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -23,6 +24,7 @@ import {
 import { dashboard } from '@/routes';
 import { index as schedulesIndex } from '@/routes/schedules';
 import { index as studyPlansIndex } from '@/routes/study-plans';
+import { index as studySessionsIndex } from '@/routes/study-sessions';
 import { index as subjectsIndex } from '@/routes/subjects';
 import type { NavItem } from '@/types';
 
@@ -46,6 +48,11 @@ const mainNavItems: NavItem[] = [
         title: 'Cronogramas',
         href: schedulesIndex(),
         icon: CalendarDays,
+    },
+    {
+        title: 'Sessões de Estudo',
+        href: studySessionsIndex(),
+        icon: Timer,
     },
 ];
 

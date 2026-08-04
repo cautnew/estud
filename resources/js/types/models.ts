@@ -94,3 +94,22 @@ export type Schedule = {
     created_at: string;
     updated_at: string;
 };
+
+export type StudySessionStatus = 'in_progress' | 'paused' | 'completed';
+
+export type StudySession = {
+    id: number;
+    owner_id: number;
+    subject_id: number;
+    topic_id: number | null;
+    date: string;
+    status: StudySessionStatus;
+    started_at: string | null;
+    duration_seconds: number;
+    note: string | null;
+    completed_at: string | null;
+    subject?: Subject;
+    topic?: Topic | null;
+    created_at: string;
+    updated_at: string;
+};
