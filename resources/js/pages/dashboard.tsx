@@ -1,5 +1,19 @@
 import { Head, Link } from '@inertiajs/react';
-import { CheckCircle2, Clock, Flame, Plus } from 'lucide-react';
+import {
+    BookOpenCheck,
+    CheckCircle2,
+    Clock,
+    Plus,
+    RotateCcw,
+    Target,
+    TrendingDown,
+    TrendingUp,
+} from 'lucide-react';
+import MonthlyEvolutionChart from '@/components/dashboard/monthly-evolution-chart';
+import PeriodComparisonChart from '@/components/dashboard/period-comparison-chart';
+import StudyHeatmap from '@/components/dashboard/study-heatmap';
+import SubjectRadarChart from '@/components/dashboard/subject-radar-chart';
+import SubjectRankingChart from '@/components/dashboard/subject-ranking-chart';
 import StudySessionStopwatchCard from '@/components/study-session-stopwatch-card';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,33 +23,121 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    EmptyState,
-    EmptyStateDescription,
-    EmptyStateTitle,
-} from '@/components/ui/empty-state';
-import { Progress } from '@/components/ui/progress';
-import { formatDuration } from '@/lib/study-session';
 import { dashboard } from '@/routes';
 import { index as studySessionsIndex } from '@/routes/study-sessions';
-import type { StudySession } from '@/types';
+import type { DashboardStats, StudySession } from '@/types';
 
-type DashboardSummary = {
-    todaySeconds: number;
-    weekSeconds: number;
-    completedThisWeek: number;
-    bySubject: { subject: string; seconds: number }[];
-};
+function DeltaBadge({ deltaPercent }: { deltaPercent: number }) {
+    if (deltaPercent === 0) {
+        return null;
+    }
+
+    const isPositive = deltaPercent > 0;
+
+    return (
+        <span
+            className={
+                isPositive
+                    ? 'flex items-center gap-0.5 text-sm font-medium text-emerald-600 dark:text-emerald-400'
+                    : 'flex items-center gap-0.5 text-sm font-medium text-red-600 dark:text-red-500'
+            }
+        >
+            {isPositive ? (
+                <TrendingUp className="size-3.5" />
+            ) : (
+                <TrendingDown className="size-3.5" />
+            )}
+            {Math.abs(deltaPercent)}%
+        </span>
+    );
+}
+
+function IndicatorTiles({
+    indicators,
+}: {
+    indicators: DashboardStats['indicators'];
+}) {
+    return (
+        <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
+            <Card>
+                <CardHeader>
+                    <CardDescription className="flex items-center gap-1.5">
+                        <Clock className="size-4" />
+                        Horas estudadas (mês)
+                    </CardDescription>
+                    <div className="flex items-baseline gap-2">
+                        <CardTitle className="text-2xl">
+                            {indicators.hoursStudied.hours}h
+                        </CardTitle>
+                        <DeltaBadge
+                            deltaPercent={indicators.hoursStudied.deltaPercent}
+                        />
+                    </div>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardDescription className="flex items-center gap-1.5">
+                        <BookOpenCheck className="size-4" />
+                        Disciplinas concluídas
+                    </CardDescription>
+                    <CardTitle className="text-2xl">
+                        {indicators.subjectsCompleted}
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardDescription className="flex items-center gap-1.5">
+                        <CheckCircle2 className="size-4" />
+                        Tópicos concluídos
+                    </CardDescription>
+                    <CardTitle className="text-2xl">
+                        {indicators.topicsCompleted}
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardDescription className="flex items-center gap-1.5">
+                        <RotateCcw className="size-4" />
+                        Revisões
+                    </CardDescription>
+                    <CardTitle className="text-2xl">
+                        {indicators.reviews.completed}
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                        {indicators.reviews.pending} pendentes ·{' '}
+                        {indicators.reviews.overdue} atrasadas
+                    </p>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardDescription className="flex items-center gap-1.5">
+                        <Target className="size-4" />
+                        Metas no prazo
+                    </CardDescription>
+                    <CardTitle className="text-2xl">
+                        {indicators.goals.onTrack}/{indicators.goals.total}
+                    </CardTitle>
+                </CardHeader>
+            </Card>
+        </div>
+    );
+}
 
 export default function Dashboard({
-    summary,
+    stats,
     activeSession,
 }: {
-    summary: DashboardSummary;
+    stats: DashboardStats;
     activeSession: StudySession | null;
 }) {
-    const topSubjectSeconds = summary.bySubject[0]?.seconds ?? 0;
-
     return (
         <>
             <Head title="Dashboard" />
@@ -64,90 +166,21 @@ export default function Dashboard({
                     </Card>
                 )}
 
-                <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardHeader>
-                            <CardDescription className="flex items-center gap-1.5">
-                                <Clock className="size-4" />
-                                Hoje
-                            </CardDescription>
-                            <CardTitle className="font-mono text-2xl tabular-nums">
-                                {formatDuration(summary.todaySeconds)}
-                            </CardTitle>
-                        </CardHeader>
-                    </Card>
+                <IndicatorTiles indicators={stats.indicators} />
 
-                    <Card>
-                        <CardHeader>
-                            <CardDescription className="flex items-center gap-1.5">
-                                <Flame className="size-4" />
-                                Últimos 7 dias
-                            </CardDescription>
-                            <CardTitle className="font-mono text-2xl tabular-nums">
-                                {formatDuration(summary.weekSeconds)}
-                            </CardTitle>
-                        </CardHeader>
-                    </Card>
+                <StudyHeatmap data={stats.heatmap} />
 
-                    <Card>
-                        <CardHeader>
-                            <CardDescription className="flex items-center gap-1.5">
-                                <CheckCircle2 className="size-4" />
-                                Sessões concluídas
-                            </CardDescription>
-                            <CardTitle className="text-2xl">
-                                {summary.completedThisWeek}
-                            </CardTitle>
-                        </CardHeader>
-                    </Card>
+                <div className="grid gap-4 lg:grid-cols-2">
+                    <MonthlyEvolutionChart data={stats.monthlyEvolution} />
+                    <SubjectRankingChart data={stats.subjectRanking} />
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Tempo por disciplina</CardTitle>
-                        <CardDescription>Últimos 7 dias</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {summary.bySubject.length === 0 ? (
-                            <EmptyState>
-                                <EmptyStateTitle>
-                                    Nenhuma sessão registrada
-                                </EmptyStateTitle>
-                                <EmptyStateDescription>
-                                    Suas sessões de estudo da semana aparecerão
-                                    aqui.
-                                </EmptyStateDescription>
-                            </EmptyState>
-                        ) : (
-                            <div className="space-y-4">
-                                {summary.bySubject.map((entry) => (
-                                    <div
-                                        key={entry.subject}
-                                        className="space-y-1.5"
-                                    >
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="font-medium">
-                                                {entry.subject}
-                                            </span>
-                                            <span className="font-mono text-muted-foreground tabular-nums">
-                                                {formatDuration(entry.seconds)}
-                                            </span>
-                                        </div>
-                                        <Progress
-                                            value={
-                                                topSubjectSeconds > 0
-                                                    ? (entry.seconds /
-                                                          topSubjectSeconds) *
-                                                      100
-                                                    : 0
-                                            }
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                <div className="grid gap-4 lg:grid-cols-2">
+                    <SubjectRadarChart data={stats.radarBySubject} />
+                    <PeriodComparisonChart
+                        comparison={stats.periodComparison}
+                    />
+                </div>
             </div>
         </>
     );

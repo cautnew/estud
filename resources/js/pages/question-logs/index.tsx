@@ -48,20 +48,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    AXIS_TICK,
+    CHART_COLOR,
+    GRID_COLOR,
+    TOOLTIP_STYLE,
+} from '@/lib/chart-theme';
 import { formatDate } from '@/lib/date';
 import { index } from '@/routes/question-logs';
 import type { QuestionLog, QuestionStats, Subject } from '@/types';
-
-const CHART_COLOR = 'var(--chart-1)';
-const GRID_COLOR = 'var(--border)';
-const AXIS_TICK = { fill: 'var(--muted-foreground)', fontSize: 12 };
-const TOOLTIP_STYLE = {
-    backgroundColor: 'var(--popover)',
-    color: 'var(--popover-foreground)',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
-    fontSize: 12,
-};
 
 function SubjectTopicFields({
     subjects,

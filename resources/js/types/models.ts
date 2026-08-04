@@ -168,3 +168,27 @@ export type QuestionStats = {
         accuracy_rate: number;
     }[];
 };
+
+export type DashboardStats = {
+    indicators: {
+        hoursStudied: { hours: number; deltaPercent: number };
+        subjectsCompleted: number;
+        topicsCompleted: number;
+        reviews: { completed: number; pending: number; overdue: number };
+        goals: { onTrack: number; total: number };
+    };
+    heatmap: { date: string; hours: number }[];
+    monthlyEvolution: { month: string; hours: number }[];
+    periodComparison: {
+        current: { hours: number; questions: number; topics: number };
+        previous: { hours: number; questions: number; topics: number };
+    };
+    radarBySubject: {
+        subject_id: number;
+        subject: string;
+        total: number;
+        correct: number;
+        accuracy_rate: number;
+    }[];
+    subjectRanking: { subject_id: number; subject: string; hours: number }[];
+};
