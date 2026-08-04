@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import {
+    BarChart3,
     BookOpen,
     CalendarDays,
     FolderGit2,
@@ -23,6 +24,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as questionLogsIndex } from '@/routes/question-logs';
 import { index as reviewsIndex } from '@/routes/reviews';
 import { index as schedulesIndex } from '@/routes/schedules';
 import { index as studyPlansIndex } from '@/routes/study-plans';
@@ -60,6 +62,11 @@ const mainNavItems: NavItem[] = [
         title: 'Revisões',
         href: reviewsIndex(),
         icon: RotateCcw,
+    },
+    {
+        title: 'Questões',
+        href: questionLogsIndex(),
+        icon: BarChart3,
     },
 ];
 

@@ -131,3 +131,40 @@ export type Review = {
     created_at: string;
     updated_at: string;
 };
+
+export type QuestionLog = {
+    id: number;
+    owner_id: number;
+    subject_id: number;
+    topic_id: number | null;
+    date: string;
+    total: number;
+    correct: number;
+    incorrect: number;
+    subject?: Subject;
+    topic?: Topic | null;
+    created_at: string;
+    updated_at: string;
+};
+
+export type QuestionStats = {
+    overall: {
+        total: number;
+        correct: number;
+        incorrect: number;
+        accuracy_rate: number;
+    };
+    bySubject: {
+        subject_id: number;
+        subject: string;
+        total: number;
+        correct: number;
+        accuracy_rate: number;
+    }[];
+    history: {
+        date: string;
+        total: number;
+        correct: number;
+        accuracy_rate: number;
+    }[];
+};
