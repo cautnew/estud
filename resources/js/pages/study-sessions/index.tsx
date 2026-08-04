@@ -27,7 +27,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { formatDate, formatDuration } from '@/lib/study-session';
+import { formatDate } from '@/lib/date';
+import { formatDuration } from '@/lib/study-session';
 import { index } from '@/routes/study-sessions';
 import type { StudySession, Subject } from '@/types';
 

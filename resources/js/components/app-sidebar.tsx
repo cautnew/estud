@@ -6,6 +6,7 @@ import {
     GraduationCap,
     LayoutGrid,
     NotebookPen,
+    RotateCcw,
     Timer,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -22,6 +23,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as reviewsIndex } from '@/routes/reviews';
 import { index as schedulesIndex } from '@/routes/schedules';
 import { index as studyPlansIndex } from '@/routes/study-plans';
 import { index as studySessionsIndex } from '@/routes/study-sessions';
@@ -53,6 +55,11 @@ const mainNavItems: NavItem[] = [
         title: 'Sessões de Estudo',
         href: studySessionsIndex(),
         icon: Timer,
+    },
+    {
+        title: 'Revisões',
+        href: reviewsIndex(),
+        icon: RotateCcw,
     },
 ];
 

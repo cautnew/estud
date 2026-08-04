@@ -25,12 +25,6 @@ export function formatDuration(totalSeconds: number): string {
         .join(':');
 }
 
-export function formatDate(date: string): string {
-    const [year, month, day] = date.slice(0, 10).split('-');
-
-    return `${day}/${month}/${year}`;
-}
-
 export function elapsedSeconds(session: StudySession): number {
     if (session.status === 'in_progress' && session.started_at) {
         const startedAt = new Date(session.started_at).getTime();

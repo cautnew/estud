@@ -15,3 +15,4 @@ require __DIR__.'/subjects.php';
 require __DIR__.'/study-plans.php';
 require __DIR__.'/schedules.php';
 require __DIR__.'/study-sessions.php';
+require __DIR__.'/reviews.php';

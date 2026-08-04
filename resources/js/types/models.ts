@@ -113,3 +113,21 @@ export type StudySession = {
     created_at: string;
     updated_at: string;
 };
+
+export type ReviewStatus = 'pending' | 'completed' | 'skipped';
+
+export type Review = {
+    id: number;
+    owner_id: number;
+    study_plan_topic_id: number;
+    scheduled_for: string;
+    interval_days: number;
+    status: ReviewStatus;
+    completed_at: string | null;
+    notified_at: string | null;
+    study_plan_topic?: StudyPlanTopic & {
+        study_plan_subject?: StudyPlanSubject;
+    };
+    created_at: string;
+    updated_at: string;
+};
