@@ -8,6 +8,7 @@ import {
     LayoutGrid,
     NotebookPen,
     RotateCcw,
+    Target,
     Timer,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -24,6 +25,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as goalsIndex } from '@/routes/goals';
 import { index as questionLogsIndex } from '@/routes/question-logs';
 import { index as reviewsIndex } from '@/routes/reviews';
 import { index as schedulesIndex } from '@/routes/schedules';
@@ -67,6 +69,11 @@ const mainNavItems: NavItem[] = [
         title: 'Questões',
         href: questionLogsIndex(),
         icon: BarChart3,
+    },
+    {
+        title: 'Metas',
+        href: goalsIndex(),
+        icon: Target,
     },
 ];
 

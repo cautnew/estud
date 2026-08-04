@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Goals\RefreshGoalProgress;
 use App\Actions\QuestionLogs\CalculateQuestionStats;
 use App\Http\Requests\QuestionLogStoreRequest;
 use App\Http\Requests\QuestionLogUpdateRequest;
@@ -41,9 +42,11 @@ class QuestionLogController extends Controller
     /**
      * Log a batch of resolved questions for a subject/topic.
      */
-    public function store(QuestionLogStoreRequest $request): RedirectResponse
+    public function store(QuestionLogStoreRequest $request, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         QuestionLog::create($request->validated());
+
+        $refreshGoalProgress->handle($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Questões registradas.')]);
 
@@ -53,9 +56,11 @@ class QuestionLogController extends Controller
     /**
      * Update a logged entry.
      */
-    public function update(QuestionLogUpdateRequest $request, QuestionLog $questionLog): RedirectResponse
+    public function update(QuestionLogUpdateRequest $request, QuestionLog $questionLog, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         $questionLog->update($request->validated());
+
+        $refreshGoalProgress->handle($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Registro atualizado.')]);
 

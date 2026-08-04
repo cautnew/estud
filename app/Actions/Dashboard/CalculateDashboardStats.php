@@ -5,9 +5,10 @@ namespace App\Actions\Dashboard;
 use App\Actions\QuestionLogs\CalculateQuestionStats;
 use App\Enums\ReviewStatus;
 use App\Enums\StudyPlanTopicStatus;
+use App\Models\Goal;
+use App\Models\GoalProgress;
 use App\Models\QuestionLog;
 use App\Models\Review;
-use App\Models\StudyPlan;
 use App\Models\StudyPlanSubject;
 use App\Models\StudyPlanTopic;
 use App\Models\StudySession;
@@ -211,47 +212,27 @@ class CalculateDashboardStats
     }
 
     /**
-     * A study plan is "on track" when its share of completed topics is at
-     * least keeping pace (within a 5-point tolerance) with the share of
-     * time elapsed toward its deadline/exam date.
+     * How many of the user's goals have already hit their target in the
+     * goal's own current period (daily/weekly/monthly). Relies on
+     * RefreshGoalProgress having kept goal_progress up to date.
      *
      * @return array{onTrack: int, total: int}
      */
     private function goalsIndicator(User $owner): array
     {
-        $plans = StudyPlan::query()
-            ->ownedBy($owner)
-            ->where(fn ($query) => $query->whereNotNull('deadline')->orWhereNotNull('exam_date'))
-            ->with('studyPlanSubjects.studyPlanTopics')
-            ->get();
+        $goals = Goal::query()->ownedBy($owner)->with('goalProgress')->get();
 
-        $onTrack = 0;
-        $total = 0;
+        $onTrack = $goals->filter(function (Goal $goal) {
+            [$periodStart] = $goal->currentPeriodBounds();
 
-        foreach ($plans as $plan) {
-            $topics = $plan->studyPlanSubjects->flatMap->studyPlanTopics;
-
-            if ($topics->isEmpty()) {
-                continue;
-            }
-
-            $total++;
-
-            $targetDate = $plan->deadline ?? $plan->exam_date;
-            $actualProgress = ($topics->where('status', StudyPlanTopicStatus::Done)->count() / $topics->count()) * 100;
-
-            $totalDays = max(1, $plan->created_at->diffInDays($targetDate, false));
-            $elapsedDays = min($totalDays, max(0, $plan->created_at->diffInDays(now(), false)));
-            $expectedProgress = ($elapsedDays / $totalDays) * 100;
-
-            if ($actualProgress >= $expectedProgress - 5) {
-                $onTrack++;
-            }
-        }
+            return $goal->goalProgress
+                ->first(fn (GoalProgress $progress) => $progress->period_start->isSameDay($periodStart))
+                ?->achieved ?? false;
+        })->count();
 
         return [
             'onTrack' => $onTrack,
-            'total' => $total,
+            'total' => $goals->count(),
         ];
     }
 

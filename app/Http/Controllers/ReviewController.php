@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Goals\RefreshGoalProgress;
 use App\Actions\Reviews\CompleteReview;
 use App\Actions\Reviews\SkipReview;
 use App\Enums\ReviewStatus;
@@ -37,11 +38,12 @@ class ReviewController extends Controller
     /**
      * Mark a pending review as done.
      */
-    public function complete(Request $request, Review $review, CompleteReview $completeReview): RedirectResponse
+    public function complete(Request $request, Review $review, CompleteReview $completeReview, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         abort_unless($request->user()->can('complete', $review), 403);
 
         $completeReview->handle($review);
+        $refreshGoalProgress->handle($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Revisão concluída.')]);
 

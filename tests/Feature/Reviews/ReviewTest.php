@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\GoalType;
 use App\Enums\ReviewStatus;
+use App\Models\Goal;
+use App\Models\GoalProgress;
 use App\Models\Review;
 use App\Models\StudyPlanTopic;
 use App\Models\User;
@@ -72,4 +75,32 @@ test('marking a study plan topic as done schedules its review chain', function (
     $response->assertSessionHasNoErrors();
     expect(Review::where('study_plan_topic_id', $studyPlanTopic->id)->count())->toBe(6);
     expect(Review::where('study_plan_topic_id', $studyPlanTopic->id)->first()->owner_id)->toBe($user->id);
+});
+
+test('marking a study plan topic as done automatically refreshes a topics goal\'s progress', function () {
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    $goal = Goal::factory()->for($user, 'owner')->ofType(GoalType::Topics)->create(['target' => 1]);
+    $studyPlanTopic = StudyPlanTopic::factory()->create();
+    $studyPlanTopic->studyPlanSubject->studyPlan()->update(['owner_id' => $user->id]);
+
+    $this->actingAs($user)->put(route('plan-topics.update', $studyPlanTopic), [
+        'status' => 'done',
+        'studied_at' => today()->toDateString(),
+    ]);
+
+    $progress = GoalProgress::where('goal_id', $goal->id)->sole();
+    expect($progress->achieved)->toBeTrue();
+});
+
+test('completing a review automatically refreshes a reviews goal\'s progress', function () {
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    $goal = Goal::factory()->for($user, 'owner')->ofType(GoalType::Reviews)->create(['target' => 1]);
+    $review = Review::factory()->for($user, 'owner')->create();
+
+    $this->actingAs($user)->patch(route('reviews.complete', $review));
+
+    $progress = GoalProgress::where('goal_id', $goal->id)->sole();
+    expect($progress->achieved)->toBeTrue();
 });

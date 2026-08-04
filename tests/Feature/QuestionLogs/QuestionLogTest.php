@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\GoalType;
+use App\Models\Goal;
+use App\Models\GoalProgress;
 use App\Models\QuestionLog;
 use App\Models\Subject;
 use App\Models\Topic;
@@ -111,4 +114,22 @@ test('a user cannot delete another user\'s question log', function () {
     $response = $this->actingAs($user)->delete(route('question-logs.destroy', $log));
 
     $response->assertForbidden();
+});
+
+test('logging questions automatically refreshes a questions goal\'s progress', function () {
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    $goal = Goal::factory()->for($user, 'owner')->ofType(GoalType::Questions)->create(['target' => 10]);
+    $subject = Subject::factory()->create();
+
+    $this->actingAs($user)->post(route('question-logs.store'), [
+        'subject_id' => $subject->id,
+        'date' => today()->toDateString(),
+        'total' => 10,
+        'correct' => 8,
+        'incorrect' => 2,
+    ]);
+
+    $progress = GoalProgress::where('goal_id', $goal->id)->sole();
+    expect($progress->achieved)->toBeTrue();
 });

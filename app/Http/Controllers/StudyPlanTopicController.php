@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Goals\RefreshGoalProgress;
 use App\Actions\Reviews\GenerateReviewChain;
 use App\Enums\StudyPlanTopicStatus;
 use App\Http\Requests\StudyPlanTopicStoreRequest;
@@ -33,13 +34,15 @@ class StudyPlanTopicController extends Controller
      * Update a topic's progress (status, studied date, notes). Marking a
      * topic as done schedules its spaced-repetition review chain.
      */
-    public function update(StudyPlanTopicUpdateRequest $request, StudyPlanTopic $studyPlanTopic, GenerateReviewChain $generateReviewChain): RedirectResponse
+    public function update(StudyPlanTopicUpdateRequest $request, StudyPlanTopic $studyPlanTopic, GenerateReviewChain $generateReviewChain, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         $studyPlanTopic->update($request->validated());
 
         if ($studyPlanTopic->status === StudyPlanTopicStatus::Done) {
             $generateReviewChain->handle($studyPlanTopic, $request->user());
         }
+
+        $refreshGoalProgress->handle($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Tópico atualizado.')]);
 

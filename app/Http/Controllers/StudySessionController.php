@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Goals\RefreshGoalProgress;
 use App\Actions\StudySessions\CompleteStudySession;
 use App\Actions\StudySessions\PauseStudySession;
 use App\Actions\StudySessions\ResumeStudySession;
@@ -89,11 +90,12 @@ class StudySessionController extends Controller
     /**
      * Pause the running stopwatch.
      */
-    public function pause(Request $request, StudySession $studySession, PauseStudySession $pauseStudySession): RedirectResponse
+    public function pause(Request $request, StudySession $studySession, PauseStudySession $pauseStudySession, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         abort_unless($request->user()->can('pause', $studySession), 403);
 
         $pauseStudySession->handle($studySession);
+        $refreshGoalProgress->handle($request->user());
 
         return back();
     }
@@ -113,9 +115,10 @@ class StudySessionController extends Controller
     /**
      * Complete the session, stopping the stopwatch for good.
      */
-    public function complete(StudySessionCompleteRequest $request, StudySession $studySession, CompleteStudySession $completeStudySession): RedirectResponse
+    public function complete(StudySessionCompleteRequest $request, StudySession $studySession, CompleteStudySession $completeStudySession, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         $completeStudySession->handle($studySession, $request->validated('note'));
+        $refreshGoalProgress->handle($request->user());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Sessão de estudo concluída.')]);
 
@@ -124,13 +127,15 @@ class StudySessionController extends Controller
 
     /**
      * Auto-save checkpoint, polled periodically by the frontend timer so
-     * elapsed time isn't lost if the tab closes unexpectedly.
+     * elapsed time isn't lost if the tab closes unexpectedly. Also keeps
+     * any "hours studied" goal's progress moving in near real time.
      */
-    public function sync(Request $request, StudySession $studySession, SyncStudySessionDuration $syncStudySessionDuration): RedirectResponse
+    public function sync(Request $request, StudySession $studySession, SyncStudySessionDuration $syncStudySessionDuration, RefreshGoalProgress $refreshGoalProgress): RedirectResponse
     {
         abort_unless($request->user()->can('sync', $studySession), 403);
 
         $syncStudySessionDuration->handle($studySession);
+        $refreshGoalProgress->handle($request->user());
 
         return back();
     }

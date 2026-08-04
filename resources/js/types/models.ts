@@ -192,3 +192,32 @@ export type DashboardStats = {
     }[];
     subjectRanking: { subject_id: number; subject: string; hours: number }[];
 };
+
+export type GoalType =
+    'hours' | 'subjects' | 'topics' | 'reviews' | 'questions';
+
+export type GoalPeriod = 'daily' | 'weekly' | 'monthly';
+
+export type GoalProgress = {
+    id: number;
+    goal_id: number;
+    period_start: string;
+    period_end: string;
+    current_value: number;
+    achieved: boolean;
+    created_at: string;
+    updated_at: string;
+};
+
+export type Goal = {
+    id: number;
+    owner_id: number;
+    subject_id: number | null;
+    type: GoalType;
+    period: GoalPeriod;
+    target: number;
+    subject?: Subject | null;
+    goal_progress?: GoalProgress[];
+    created_at: string;
+    updated_at: string;
+};

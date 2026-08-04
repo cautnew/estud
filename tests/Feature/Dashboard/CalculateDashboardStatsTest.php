@@ -2,7 +2,10 @@
 
 use App\Actions\Dashboard\CalculateDashboardStats;
 use App\Actions\QuestionLogs\CalculateQuestionStats;
+use App\Enums\GoalPeriod;
 use App\Enums\StudyPlanTopicStatus;
+use App\Models\Goal;
+use App\Models\GoalProgress;
 use App\Models\QuestionLog;
 use App\Models\Review;
 use App\Models\StudyPlan;
@@ -110,20 +113,21 @@ test('reviews are bucketed into completed, pending, and overdue', function () {
     expect($stats['indicators']['reviews'])->toBe(['completed' => 1, 'pending' => 1, 'overdue' => 1]);
 });
 
-test('a plan is on track when completion keeps pace with elapsed time toward its deadline', function () {
+test('the goals indicator counts how many goals have hit their target for the current period', function () {
     $user = User::factory()->create();
 
-    // Created 10 days ago, deadline in 10 days (halfway through): all topics done, well ahead of the 50% expected pace.
-    $onTrackPlan = StudyPlan::factory()->for($user, 'owner')->create(['deadline' => today()->addDays(10)]);
-    $onTrackPlan->forceFill(['created_at' => today()->subDays(10)])->save();
-    $onTrackSubject = StudyPlanSubject::factory()->for($onTrackPlan)->create();
-    StudyPlanTopic::factory()->for($onTrackSubject)->create(['status' => StudyPlanTopicStatus::Done]);
+    $achievedGoal = Goal::factory()->for($user, 'owner')->create(['period' => GoalPeriod::Weekly]);
+    GoalProgress::factory()->for($achievedGoal)->achieved()->create([
+        'period_start' => today()->startOfWeek()->toDateString(),
+        'period_end' => today()->endOfWeek()->toDateString(),
+    ]);
 
-    // Same timeline, but nothing has been studied yet: far behind pace.
-    $behindPlan = StudyPlan::factory()->for($user, 'owner')->create(['deadline' => today()->addDays(10)]);
-    $behindPlan->forceFill(['created_at' => today()->subDays(10)])->save();
-    $behindSubject = StudyPlanSubject::factory()->for($behindPlan)->create();
-    StudyPlanTopic::factory()->for($behindSubject)->create(['status' => StudyPlanTopicStatus::Pending]);
+    $missedGoal = Goal::factory()->for($user, 'owner')->create(['period' => GoalPeriod::Weekly]);
+    GoalProgress::factory()->for($missedGoal)->create([
+        'period_start' => today()->startOfWeek()->toDateString(),
+        'period_end' => today()->endOfWeek()->toDateString(),
+        'achieved' => false,
+    ]);
 
     $stats = (new CalculateDashboardStats(new CalculateQuestionStats))->handle($user);
 

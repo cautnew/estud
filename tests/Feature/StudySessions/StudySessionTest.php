@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\GoalType;
 use App\Enums\StudySessionStatus;
+use App\Models\Goal;
+use App\Models\GoalProgress;
 use App\Models\StudySession;
 use App\Models\Subject;
 use App\Models\Topic;
@@ -136,4 +139,17 @@ test('a user cannot delete another user\'s study session', function () {
     $response = $this->actingAs($user)->delete(route('study-sessions.destroy', $session));
 
     $response->assertForbidden();
+});
+
+test('completing a session automatically refreshes hours goal progress', function () {
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    $goal = Goal::factory()->for($user, 'owner')->ofType(GoalType::Hours)->create(['target' => 1]);
+    $session = StudySession::factory()->for($user, 'owner')->create();
+
+    $this->travel(3600)->seconds();
+    $this->actingAs($user)->patch(route('study-sessions.complete', $session));
+
+    $progress = GoalProgress::where('goal_id', $goal->id)->sole();
+    expect($progress->achieved)->toBeTrue();
 });
