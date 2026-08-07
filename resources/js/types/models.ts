@@ -221,3 +221,44 @@ export type Goal = {
     created_at: string;
     updated_at: string;
 };
+
+export type ExamTopic = {
+    id: number;
+    exam_subject_id: number;
+    topic_id: number;
+    order: number;
+    topic?: Topic;
+    created_at: string;
+    updated_at: string;
+};
+
+export type ExamSubject = {
+    id: number;
+    exam_notice_id: number;
+    subject_id: number;
+    order: number;
+    subject?: Subject;
+    exam_topics?: ExamTopic[];
+    created_at: string;
+    updated_at: string;
+};
+
+export type ExamNotice = {
+    id: number;
+    owner_id: number;
+    name: string;
+    exam_board: string;
+    exam_date: string | null;
+    exam_subjects_count?: number;
+    exam_subjects?: ExamSubject[];
+    owner?: Owner;
+    created_at: string;
+    updated_at: string;
+};
+
+export type ExamNoticeProgress = {
+    studiedTopics: number;
+    totalTopics: number;
+    studiedPercentage: number;
+    remainingPercentage: number;
+};
