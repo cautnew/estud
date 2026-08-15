@@ -262,3 +262,63 @@ export type ExamNoticeProgress = {
     studiedPercentage: number;
     remainingPercentage: number;
 };
+
+export type StudyRecommendationSource = 'schedule' | 'cycle' | 'plan';
+
+export type StudyRecommendation = {
+    source: StudyRecommendationSource;
+    subject_id: number;
+    subject: string;
+    topic_id: number | null;
+    topic: string | null;
+    label: string;
+};
+
+export type ReviewRecommendation = {
+    id: number;
+    subject: string;
+    topic: string;
+    scheduled_for: string;
+    interval_days: number;
+    days_overdue: number;
+};
+
+export type HealthScoreComponent = {
+    score: number;
+    weight: number;
+    details: Record<string, number>;
+};
+
+export type HealthScore = {
+    score: number;
+    label: string;
+    components: {
+        consistency: HealthScoreComponent;
+        goals: HealthScoreComponent;
+        reviews: HealthScoreComponent;
+        schedule: HealthScoreComponent;
+    };
+};
+
+export type ReportType =
+    'productivity' | 'evolution' | 'reviews' | 'performance' | 'goals';
+
+export type ReportTypeOption = {
+    value: ReportType;
+    label: string;
+};
+
+export type Report = {
+    title: string;
+    filters_description: string;
+    summary: { label: string; value: string }[];
+    columns: string[];
+    rows: string[][];
+};
+
+export type ReportFilters = {
+    date_from: string;
+    date_to: string;
+    subject_id: number | null;
+    study_plan_id: number | null;
+};

@@ -3,11 +3,13 @@ import {
     BarChart3,
     BookOpen,
     CalendarDays,
+    FileBarChart,
     FolderGit2,
     GraduationCap,
     LayoutGrid,
     NotebookPen,
     RotateCcw,
+    Sparkles,
     Target,
     Timer,
 } from 'lucide-react';
@@ -27,6 +29,8 @@ import {
 import { dashboard } from '@/routes';
 import { index as goalsIndex } from '@/routes/goals';
 import { index as questionLogsIndex } from '@/routes/question-logs';
+import { index as recommendationsIndex } from '@/routes/recommendations';
+import { index as reportsIndex } from '@/routes/reports';
 import { index as reviewsIndex } from '@/routes/reviews';
 import { index as schedulesIndex } from '@/routes/schedules';
 import { index as studyPlansIndex } from '@/routes/study-plans';
@@ -39,6 +43,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Recomendações',
+        href: recommendationsIndex(),
+        icon: Sparkles,
     },
     {
         title: 'Disciplinas',
@@ -74,6 +83,11 @@ const mainNavItems: NavItem[] = [
         title: 'Metas',
         href: goalsIndex(),
         icon: Target,
+    },
+    {
+        title: 'Relatórios',
+        href: reportsIndex(),
+        icon: FileBarChart,
     },
 ];
 

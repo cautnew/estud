@@ -18,3 +18,5 @@ require __DIR__.'/study-sessions.php';
 require __DIR__.'/reviews.php';
 require __DIR__.'/question-logs.php';
 require __DIR__.'/goals.php';
+require __DIR__.'/recommendations.php';
+require __DIR__.'/reports.php';
