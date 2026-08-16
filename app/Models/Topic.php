@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Database\Factories\TopicFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +22,7 @@ use Illuminate\Support\Carbon;
 class Topic extends Model
 {
     /** @use HasFactory<TopicFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
 
     /**
      * @return BelongsTo<Subject, $this>

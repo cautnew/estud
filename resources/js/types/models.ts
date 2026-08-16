@@ -322,3 +322,31 @@ export type ReportFilters = {
     subject_id: number | null;
     study_plan_id: number | null;
 };
+
+export type ActivityLogEvent = 'created' | 'updated' | 'deleted';
+
+export type ActivityLogEntry = {
+    id: number;
+    event: ActivityLogEvent;
+    subject_type: string | null;
+    subject_id: number | null;
+    causer: { id: number; name: string } | null;
+    changes: {
+        old: Record<string, unknown>;
+        attributes: Record<string, unknown>;
+    };
+    created_at: string | null;
+};
+
+export type ActivityLogSubjectTypeOption = { value: string; label: string };
+
+export type Paginated<T> = {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+    links: { url: string | null; label: string; active: boolean }[];
+};

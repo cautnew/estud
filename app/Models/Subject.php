@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Database\Factories\SubjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
 class Subject extends Model
 {
     /** @use HasFactory<SubjectFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return HasMany<Topic, $this>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ScheduleType;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Database\Factories\ScheduleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
 class Schedule extends Model
 {
     /** @use HasFactory<ScheduleFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return array<string, string>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ExamNoticeController;
 use App\Http\Controllers\Admin\ExamNoticeImportController;
 use App\Http\Controllers\Admin\ExamSubjectController;
@@ -12,6 +13,8 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::inertia('admin/dashboard', 'admin/dashboard')->name('admin.dashboard');
 
     Route::name('admin.')->prefix('admin')->group(function () {
+        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+
         Route::resource('subjects', SubjectController::class)
             ->except(['create', 'edit']);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Database\Factories\ExamNoticeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
 class ExamNotice extends Model
 {
     /** @use HasFactory<ExamNoticeFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return array<string, string>

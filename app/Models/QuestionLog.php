@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Database\Factories\QuestionLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -27,7 +28,7 @@ use Illuminate\Support\Carbon;
 class QuestionLog extends Model
 {
     /** @use HasFactory<QuestionLogFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return array<string, string>

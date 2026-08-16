@@ -28,4 +28,44 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                // Split the heaviest, least-often-changed vendor libraries
+                // into their own chunks so a change to app code doesn't
+                // bust the browser cache for all of them at once, and so
+                // pages that don't use charts/calendar/dnd don't pay for
+                // them upfront. Vite 8's Rolldown bundler needs this as a
+                // function rather than the classic Rollup object form.
+                manualChunks(id: string) {
+                    if (!id.includes('node_modules')) {
+                        return;
+                    }
+
+                    if (
+                        id.includes('/react/') ||
+                        id.includes('/react-dom/')
+                    ) {
+                        return 'vendor-react';
+                    }
+
+                    if (id.includes('/recharts/')) {
+                        return 'vendor-charts';
+                    }
+
+                    if (id.includes('/react-big-calendar/')) {
+                        return 'vendor-calendar';
+                    }
+
+                    if (id.includes('/react-dnd')) {
+                        return 'vendor-dnd';
+                    }
+
+                    if (id.includes('/@tanstack/')) {
+                        return 'vendor-query';
+                    }
+                },
+            },
+        },
+    },
 });

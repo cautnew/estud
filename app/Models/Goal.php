@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GoalPeriod;
 use App\Enums\GoalType;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Carbon\CarbonInterface;
 use Database\Factories\GoalFactory;
@@ -28,7 +29,7 @@ use Illuminate\Support\Carbon;
 class Goal extends Model
 {
     /** @use HasFactory<GoalFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return array<string, string>

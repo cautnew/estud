@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StudyCycleType;
+use App\Models\Concerns\Auditable;
 use App\Models\Concerns\HasOwner;
 use Database\Factories\StudyCycleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
 class StudyCycle extends Model
 {
     /** @use HasFactory<StudyCycleFactory> */
-    use HasFactory, HasOwner;
+    use Auditable, HasFactory, HasOwner;
 
     /**
      * @return array<string, string>
